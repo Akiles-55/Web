@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extractor de Pistas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Sube tu archivo de audio para separar las pistas</h1>
+    
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_file') }}">
+        <input type="file" name="file" accept="audio/*">
+        <button type="submit">Subir y separar</button>
+    </form>
+
+    {% if tracks %}
+        <h2>Pistas separadas:</h2>
+        <ul>
+            {% for track in tracks %}
+                <li>
+                    <!-- Mostrar solo el nombre de la pista sin la extensión -->
+                    {{ track.split('/')[-1].replace('.wav', '').capitalize() }}  
+                    <audio controls>
+                        <source src="{{ url_for('download_file', track=track) }}" type="audio/wav">
+                        Tu navegador no soporta el reproductor de audio.
+                    </audio>
+                    <a href="{{ url_for('download_file', track=track) }}">
+                        <button>Descargar</button>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
